@@ -86,6 +86,38 @@
         "binary_sensor": {
             "online": {
                 "name": "Life360 online ({acct_id})"
+            },
+            "driving": {
+                "name": "Driving"
+            },
+            "battery_charging": {
+                "name": "Charging"
+            },
+            "wifi_on": {
+                "name": "Wi-Fi"
+            }
+        },
+        "sensor": {
+            "battery_level": {
+                "name": "Battery level"
+            },
+            "speed": {
+                "name": "Speed"
+            },
+            "gps_accuracy": {
+                "name": "GPS accuracy"
+            },
+            "address": {
+                "name": "Address"
+            },
+            "place": {
+                "name": "Place"
+            },
+            "at_loc_since": {
+                "name": "At location since"
+            },
+            "last_seen": {
+                "name": "Last seen"
             }
         }
     },
