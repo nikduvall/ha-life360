@@ -45,6 +45,7 @@ from .const import (
     STATE_DRIVING,
 )
 from .coordinator import L360ConfigEntry, MemberDataUpdateCoordinator
+from .entity import member_device_info
 from .helpers import ConfigOptions, MemberData, MemberID, NoLocReason
 
 _LOGGER = logging.getLogger(__name__)
@@ -132,6 +133,7 @@ class Life360DeviceTracker(
         self._options = ConfigOptions.from_dict(coordinator.config_entry.options)
         self._prev_data = self._data = deepcopy(coordinator.data)
         self._update_basic_attrs()
+        self._attr_device_info = member_device_info(mid, self._data.details.name)
         self._ignored_update_reasons: list[str] = []
 
         if self._data.loc:
@@ -171,8 +173,8 @@ class Life360DeviceTracker(
         """Return if system is configured for Metric."""
         return self.hass.config.units is METRIC_SYSTEM
 
-    @property
     @override
+    @property
     def force_update(self) -> bool:
         """Return True if state updates should be forced.
 
@@ -181,8 +183,8 @@ class Life360DeviceTracker(
         """
         return False
 
-    @property
     @override
+    @property
     def battery_level(self) -> int | None:
         """Return the battery level of the device.
 
@@ -192,8 +194,8 @@ class Life360DeviceTracker(
             return None
         return self._data.loc.battery_level
 
-    @property
     @override
+    @property
     def location_accuracy(self) -> float:
         """Return the location accuracy of the device.
 
@@ -203,16 +205,16 @@ class Life360DeviceTracker(
             return 0
         return self._data.loc.details.gps_accuracy
 
-    @property
     @override
+    @property
     def latitude(self) -> float | None:
         """Return latitude value of the device."""
         if not self._data.loc:
             return None
         return self._data.loc.details.latitude
 
-    @property
     @override
+    @property
     def longitude(self) -> float | None:
         """Return longitude value of the device."""
         if not self._data.loc:
@@ -229,8 +231,8 @@ class Life360DeviceTracker(
                 return True
         return self._data.loc.details.driving
 
-    @property
     @override
+    @property
     def state(self) -> str | None:
         """Return the state of the device."""
         # If location details are missing, set state to "unknown"; "reason" attribute
@@ -243,8 +245,8 @@ class Life360DeviceTracker(
             return STATE_DRIVING
         return state
 
-    @property
     @override
+    @property
     def extra_state_attributes(self) -> Mapping[str, Any] | None:
         """Return entity specific state attributes."""
         if self._data.loc:
@@ -297,8 +299,8 @@ class Life360DeviceTracker(
 
         return {ATTR_REASON: reason}
 
-    @property
     @override
+    @property
     def extra_restore_state_data(self) -> MemberData:
         """Return Life360 specific state data to be restored."""
         return self._data
@@ -336,8 +338,8 @@ class Life360DeviceTracker(
             return
         await self.coordinator.update_location()
 
-    @callback
     @override
+    @callback
     def _handle_coordinator_update(self, config_changed: bool = False) -> None:
         """Handle updated data from the coordinator."""
         if self.coordinator.data == self._data and not config_changed:
